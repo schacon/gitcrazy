@@ -3,7 +3,7 @@ require 'pp'
 
 server_roles = {
   's1' => ['webserver'],
-  's2' => ['webserver'],
+  's2' => ['database'],
   's3' => ['webserver', 'memcache'],
   's4' => ['database', 'memcache']
 }
