@@ -1,0 +1,11 @@
+#!/bin/sh
+
+git for-each-ref --shell --format="ref=%(refname)" refs/heads/servers | \
+while read entry
+do
+       eval "$entry"
+       echo $entry
+       git ls-tree $ref
+       echo
+done
+

@@ -17,9 +17,9 @@ role = ARGV[2]
 #           "database"  => ["s4"] }
 roles = {}
 server_roles.each do |server, sroles|
-  sroles.each do |role| 
-    roles[role] ||= []
-    roles[role] << server
+  sroles.each do |srole| 
+    roles[srole] ||= []
+    roles[srole] << server
   end
 end
 
@@ -38,13 +38,17 @@ roles[role].each do |server|
   
   # write new tree and commit
   tree_sha = `git write-tree`.chomp
-  prev_commit = `git rev-parse servers/#{server}`  
-  pcommit = prev_commit != "servers/#{server}" ? "-p #{prev_commit}" : ''
+  prev_commit = `git rev-parse servers/#{server} 2>/dev/null`.chomp  
+  pcommit = (prev_commit != "servers/#{server}") ? "-p #{prev_commit}" : ''
 
-  commit_sha = `echo 'server #{server} | git commit-tree #{tree_sha} #{pcommit}`
+  commit_sha = `echo 'server #{server}' | git commit-tree #{tree_sha} #{pcommit}`.chomp
   
   # update server branches
-  puts "  writing c:#{commit_sha} t:#{tree_sha}"
+  puts "  writing c:#{commit_sha}"
+  puts "          t:#{tree_sha}"
+  puts
+
+  # update the server reference
   `git update-ref refs/heads/servers/#{server} #{commit_sha}`
 end
 
